@@ -23,11 +23,11 @@ NegativeInt = Annotated[int, Field(gt=0)]
 class Config(BaseModel):
     width: int = Field(..., gt=0)
     height: PositiveInt
-    entry: tuple[PositiveInt, PositiveInt] = Field(...)
-    exit_p: tuple[PositiveInt, PositiveInt] = Field(...)
+    entry: tuple[int, int] = Field(...)
+    exit: tuple[int, int] = Field(...)
     output_file: str
     perfect: bool
-    algorith: str
+    algorithm: str
     show_path: bool
     theme: str
     animate: bool
@@ -46,10 +46,14 @@ class Config(BaseModel):
             for key, value in params.items():
                 key = key.lower()
                 match key:
-                    case "entry":
-                        values = value.split(",")
-                        print(values)
-                        exit()
+                    case "entry" | "exit":
+                        value = value.split(",")
+                        value = (value[0], value[1])
+                match value:
+                    case "False":
+                        value = False
+                    case "True":
+                        value = True
                 new_dict[key] = value
         return new_dict
 
