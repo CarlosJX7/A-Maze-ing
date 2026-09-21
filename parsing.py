@@ -13,6 +13,17 @@ ANIMATE=False #optional
 
 """
 
+from enum import Enum
+from pydantic import BaseModel, model_validator, Field
+
+class ValidParams(str, Enum):
+    WIDTH = "width"
+    HEIGHT = "height"
+    ENTRY = "entry"
+    EXIT = "exit"
+    OUTPUT_FILE = "output_file"
+    PERFECT = "perfect"
+
 import sys
 from pydantic import BaseModel, Field, model_validator, ValidationError
 from typing import Annotated
@@ -27,10 +38,18 @@ class Config(BaseModel):
     exit: tuple[int, int] = Field(...)
     output_file: str = Field(...)
     perfect: bool = Field(...)
+    # Optionals
     algorithm: str | None = None
     show_path: bool | None = None
     theme: str | None = None
     animate: bool | None = None
+
+    @model_validator(mode="after")
+    def validate_args(self):
+        entry_x, entry_y = self.entry
+        if entry_x >= self.width or entry_y >= self.height:
+            raise ValueError("Entry points outside the limits")
+        return self
 
     @staticmethod
     def open_file(path: str) -> dict[str, str]:
@@ -41,10 +60,15 @@ class Config(BaseModel):
                 line = line.strip()
                 if line.startswith("#"):
                     continue
-                key, sep, value = line.partition("=")
+                p_key, sep, value = line.partition("=")
+                if not sep:
+                    raise ValueError("Error in sign input")
+                try:
+                    key = ValidParams[p_key]
+                except ValueError:
+                    raise ValueError(f"Error: key '{p_key}' not found")
                 params[key] = value
             for key, value in params.items():
-                key = key.lower()
                 match key:
                     case "entry" | "exit":
                         value = value.split(",")
@@ -61,4 +85,3 @@ class Config(BaseModel):
     def parse_input(input: dict[str, str]):
         new = Config.model_validate(input)
         print(new)
-
