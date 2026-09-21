@@ -8,8 +8,8 @@ OUTPUT_FILE=maze.txt
 PERFECT=True
 ALGORITHM=dfs
 SHOW_PATH=False
-THEME=Hedge
-ANIMATE=False
+THEME=Hedge #optional
+ANIMATE=False #optional
 
 """
 
@@ -25,12 +25,12 @@ class Config(BaseModel):
     height: PositiveInt
     entry: tuple[int, int] = Field(...)
     exit: tuple[int, int] = Field(...)
-    output_file: str
-    perfect: bool
-    algorithm: str
-    show_path: bool
-    theme: str
-    animate: bool
+    output_file: str = Field(...)
+    perfect: bool = Field(...)
+    algorithm: str | None = None
+    show_path: bool | None = None
+    theme: str | None = None
+    animate: bool | None = None
 
     @staticmethod
     def open_file(path: str) -> dict[str, str]:
