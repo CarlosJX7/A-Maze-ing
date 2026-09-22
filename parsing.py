@@ -54,15 +54,17 @@ class Config(BaseModel):
     @staticmethod
     def open_file(path: str) -> dict[str, str]:
         new_dict = {}
+        line_counter = 0
         with open(path, "r", encoding="utf-8") as file:
             params = {}
             for line in file:
+                line_counter += 1
                 line = line.strip()
                 if line.startswith("#"):
                     continue
                 p_key, sep, value = line.partition("=")
                 if not sep:
-                    raise ValueError("Error in sign input")
+                    raise ValueError(f"Error in sign input. Line {line_counter}")
                 try:
                     key = ValidParams[p_key]
                 except ValueError:
@@ -83,5 +85,9 @@ class Config(BaseModel):
 
     @staticmethod
     def parse_input(input: dict[str, str]):
-        new = Config.model_validate(input)
+        try:
+            new = Config.model_validate(input)
+        except ValueError as e:
+            print(e)
+            return
         print(new)
