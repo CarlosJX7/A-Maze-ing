@@ -1,0 +1,12 @@
+# Runtime
+pydantic>=2.0,<3
+
+# Lint / type checking (make lint)
+flake8>=7.0
+mypy>=1.10
+
+# Build of the mazegen-* package (python3 -m build)
+build>=1.0
+
+# Tests
+pytest>=8.0
