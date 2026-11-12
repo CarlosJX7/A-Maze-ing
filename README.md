@@ -195,12 +195,13 @@ Also check that the name and version of the .whl match the pyproject.toml.
 ### Example
 
 ```python
-from mazegen import MazeGenerator
+from mazegen import MazeGenerator, solve
 
 generator = MazeGenerator(width=20, height=15, entry=(0, 0), exit=(19, 14),
-                          perfect=True, seed=42)
-maze = generator.generate()
-path = generator.solve()
+                          perfect=True)
+maze = generator.generate(seed=42)  # same seed -> same maze
+print(maze.cells[0][0])             # closed walls of the top-left cell
+path = solve(maze)                  # shortest path, e.g. "EESSE..."
 ```
 -->
 
