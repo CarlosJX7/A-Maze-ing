@@ -52,8 +52,8 @@ ALL_WALLS = NORTH.wall | EAST.wall | SOUTH.wall | WEST.wall
 class Maze:
     """A rectangular grid of cells with walls.
 
-    Walls should only be changed with ``open_wall``, which updates both
-    cells at once, so walls are always coherent between neighbours.
+    ``open_wall`` updates both cells at once, which keeps the walls
+    coherent between neighbours.
 
     Attributes:
         width: Number of columns.
@@ -167,24 +167,3 @@ class Maze:
             raise ValueError(f"cannot open the outer wall of ({x}, {y})")
         self.cells[y][x] &= ~direction.wall
         self.cells[ny][nx] &= ~OPPOSITE[direction].wall
-
-    def solve(self) -> str:
-        """Find the shortest path from the entry to the exit.
-
-        Returns:
-            The moves to follow from the entry, one letter per move,
-            for example ``"EESWS"``.
-
-        Raises:
-            ValueError: If the exit cannot be reached from the entry.
-        """
-        # TODO: breadth-first search (BFS) from self.entry.
-        #  - Use a queue (collections.deque) of cells to visit and a
-        #    dict that remembers, for each visited cell, the cell and the
-        #    Direction it was reached from.
-        #  - From a cell, you can move to a neighbour (self.neighbours)
-        #    only if there is no wall in between (self.has_wall).
-        #  - When self.exit is reached, walk the dict back to the entry
-        #    and join the Direction letters in the right order.
-        #  BFS always finds a shortest path, even if PERFECT=False.
-        raise NotImplementedError("Maze.solve is not implemented yet")

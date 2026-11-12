@@ -1,8 +1,21 @@
 """Random maze generation, reproducible from a seed."""
 
-import random
-
 from .maze import Maze
+
+# Only the public interface below is fixed, because the rest of the program
+# uses it: MazeGenerator(width, height, entry, exit, perfect) and
+# generate(seed) returning a Maze. Everything else is up to you: the
+# algorithm, helper methods or functions, new files inside mazegen/...
+#
+# Hints:
+#  - maze.py has optional helpers: Maze.closed() builds a maze with every
+#    wall closed, and maze.open_wall() opens a wall on both sides at once,
+#    so walls stay coherent. Use them only if they help.
+#  - For the seed to work, use your own random.Random(seed) instance
+#    instead of the functions of the random module.
+#  - The cells of the "42" go in maze.pattern (left empty if it does not
+#    fit); the program prints the warning, not this class.
+#  - Explain in the README which algorithm you chose and why.
 
 
 class MazeGenerator:
@@ -17,7 +30,7 @@ class MazeGenerator:
         generator = MazeGenerator(20, 15, entry=(0, 0), exit=(19, 14))
         maze = generator.generate(seed=42)  # always the same maze
         maze.cells[0][0]                    # walls of the top-left cell
-        maze.solve()                        # e.g. "EESSE..."
+        solve(maze)                         # e.g. "EESSE..."
         other = generator.generate()        # a new random maze
         other.seed                          # seed to get it back
 
@@ -67,10 +80,14 @@ class MazeGenerator:
     def generate(self, seed: int | None = None) -> Maze:
         """Build a new maze.
 
-        The result always follows the rules of the subject: coherent
-        walls, closed outer border, every cell reachable except the
-        "42", no open area of 3x3 cells or more, and exactly one path
-        between any two cells if ``perfect`` is True.
+        The maze must follow the rules of the subject:
+
+        - walls are coherent between neighbouring cells;
+        - the outer border is closed;
+        - every cell can be reached, except the cells of the "42";
+        - there is no open area of 3x3 cells or more;
+        - if ``perfect`` is True, there is exactly one path between any
+          two cells.
 
         Args:
             seed: Seed for the random generator. The same seed always
@@ -85,69 +102,4 @@ class MazeGenerator:
             ValueError: If the entry or the exit falls on a cell of the
                 "42" pattern.
         """
-        if seed is None:
-            seed = random.randrange(2**32)
-        rng = random.Random(seed)
-        maze = Maze.closed(
-            self.width, self.height, self.entry, self.exit, seed
-        )
-        self._place_pattern(maze)
-        self._carve(maze, rng)
-        if not self.perfect:
-            self._add_loops(maze, rng)
-        return maze
-
-    def _place_pattern(self, maze: Maze) -> None:
-        """Reserve the cells that draw the "42".
-
-        Args:
-            maze: Fully closed maze to draw the pattern on.
-
-        Raises:
-            ValueError: If the entry or the exit is one of the pattern
-                cells.
-        """
-        # TODO:
-        #  - Decide the shape of the "42" (e.g. a small grid of 0/1) and
-        #    place it in the centre of the maze.
-        #  - Add its cells to maze.pattern. They are already fully
-        #    closed: _carve must never open them.
-        #  - If the maze is too small, leave maze.pattern empty and
-        #    return. The program (not this class) prints the error.
-        #  - If self.entry or self.exit is a pattern cell, raise
-        #    ValueError.
-        raise NotImplementedError("pattern is not implemented yet")
-
-    def _carve(self, maze: Maze, rng: random.Random) -> None:
-        """Open walls until every cell is reachable: a perfect maze.
-
-        Args:
-            maze: Maze with the "42" already placed.
-            rng: Random generator to use. Never use the functions of the
-                ``random`` module directly, or the seed stops working.
-        """
-        # TODO: generation algorithm (e.g. recursive backtracker, Prim,
-        # Kruskal, Wilson...). Explain in the README which one and WHY.
-        #  - Open walls only with maze.open_wall(x, y, direction):
-        #    it keeps the walls coherent and the outer border closed.
-        #  - Skip the cells in maze.pattern.
-        #  - Every other cell must be reachable from the entry.
-        #  - Opening exactly one wall per newly visited cell builds a
-        #    spanning tree: one single path between any two cells.
-        #  A spanning tree never has open 2x2 areas, so the "no 3x3
-        #  open area" rule only matters in _add_loops.
-        raise NotImplementedError("generation is not implemented yet")
-
-    def _add_loops(self, maze: Maze, rng: random.Random) -> None:
-        """Open some extra walls so the maze has loops (PERFECT=False).
-
-        Args:
-            maze: Perfect maze returned by ``_carve``.
-            rng: Random generator to use.
-        """
-        # TODO:
-        #  - Open a few random walls that are still closed (never on
-        #    pattern cells nor on the outer border).
-        #  - Before opening a wall, check that it does not create an
-        #    open area of 3x3 cells or more (subject rule).
-        raise NotImplementedError("loops are not implemented yet")
+        raise NotImplementedError("generate is not implemented yet")
