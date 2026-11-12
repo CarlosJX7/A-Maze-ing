@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mazegen"
+dynamic = ["version"]
+description = "Random maze generation, reproducible from a seed."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "carlinaq" },
+    { name = "danipere" },
+]
+dependencies = []
+
+[tool.setuptools]
+# Only the reusable package goes into the wheel, not the A-Maze-ing program
+# (a_maze_ing.py, parsing.py).
+packages = ["mazegen"]
+
+[tool.setuptools.dynamic]
+version = { attr = "mazegen.__version__" }
+
+[tool.setuptools.package-data]
+mazegen = ["py.typed"]
